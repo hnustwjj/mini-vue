@@ -1,7 +1,7 @@
 let activeEffect
 class ReactiveEffect {
   _fn: any
-  constructor(fn) {
+  constructor(fn, public scheduler?: any) {
     this._fn = fn
   }
   run() {
@@ -12,8 +12,9 @@ class ReactiveEffect {
     return res
   }
 }
-export function effect(fn) {
-  const _effect = new ReactiveEffect(fn)
+export function effect(fn, options = {} as any) {
+  const _effect = new ReactiveEffect(fn, options.scheduler)
+
   _effect.run()
   // 因为run方法内部是用this指针来修改全局的activeEffect
   // 所以这里需要修改this指向
@@ -36,10 +37,19 @@ function getDep(target, key) {
 }
 export function track(target, key) {
   const deps = getDep(target, key)
-  deps.add(activeEffect)
+  // 注意，只有在activeEffect不为空时才添加
+  // 并不是所有用到响应式数据的地方都要收集依赖的，只有在effect中才会收集依赖
+  if (activeEffect) {
+    deps.add(activeEffect)
+  }
 }
 export function trigger(target, key) {
   const deps = getDep(target, key)
-  deps.forEach(effect => effect.run())
-
+  deps.forEach(effect => {
+    if (effect.scheduler) {
+      effect.scheduler()
+    } else {
+      effect.run()
+    }
+  })
 }
