@@ -6,7 +6,7 @@
   "author": "wjj <948065841@qq.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest --watchAll"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
