@@ -1,5 +1,6 @@
 import { track, trigger } from './effect'
 
+// 避免重复创建
 const get = createGetter()
 const set = createSetter()
 const readonlyGet = createGetter(true)
