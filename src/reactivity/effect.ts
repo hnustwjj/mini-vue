@@ -2,7 +2,7 @@ import { extend } from './../shared/index'
 let activeEffect
 const targetMap = new WeakMap()
 
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any
   deps = [] // 保存收集了当前effect的dep
   active = true // 标记是否要清除副作用
