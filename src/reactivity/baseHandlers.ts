@@ -1,5 +1,6 @@
 import { track, trigger } from './effect'
-
+import { reactive, readonly } from './reactive'
+import { isObject } from '../shared/index'
 // 避免重复创建
 const get = createGetter()
 const set = createSetter()
@@ -12,9 +13,18 @@ export const enum ReactiveFlags {
 // 使用高阶函数来创建get方法
 function createGetter(isReadonly = false) {
   return function get(target, key, receiver) {
+    if (key === ReactiveFlags.IS_REACTIVE) {
+      return !isReadonly
+    } else if (key === ReactiveFlags.IS_READONLY) {
+      return isReadonly
+    }
+
     const res = Reflect.get(target, key, receiver)
-    if (key === ReactiveFlags.IS_REACTIVE) return !isReadonly
-    else if (key === ReactiveFlags.IS_READONLY) return isReadonly
+
+    // 判断res的类型是不是对象类型，如果是就转化为响应式对象或者readonly对象
+    if (isObject(res)) {
+      return isReadonly ? readonly(res) : reactive(res)
+    }
 
     // 如果不是readonly就追踪依赖
     if (!isReadonly) {
