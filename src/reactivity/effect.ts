@@ -53,6 +53,11 @@ function getDep(target, key) {
 // 追踪依赖（收集）
 export function track(target, key) {
   const dep = getDep(target, key)
+  // 收集依赖
+  trackEffects(dep)
+}
+
+export function trackEffects(dep) {
   // 注意，只有在activeEffect不为空时才添加
   // 并不是所有用到响应式数据的地方都要收集依赖的，只有在effect中才会收集依赖
   if (activeEffect) {
@@ -67,6 +72,10 @@ export function track(target, key) {
 // 触发依赖
 export function trigger(target, key) {
   const dep = getDep(target, key)
+  triggerEffects(dep)
+}
+
+export function triggerEffects(dep) {
   dep.forEach(effect => {
     if (effect.scheduler) {
       // 用户可以自定义依赖触发的逻辑，没有自定义的话就默认执行run
@@ -76,6 +85,7 @@ export function trigger(target, key) {
     }
   })
 }
+
 
 // 入口
 export function effect(fn, options = {} as any) {
@@ -87,7 +97,7 @@ export function effect(fn, options = {} as any) {
   // 因为run方法内部是用this指针来修改全局的activeEffect
   // 所以这里需要修改this指向
   const runner: any = _effect.run.bind(_effect)
-  
+
   // 将effect挂载以便于在stop时获取effect
   runner.effect = _effect
   return runner
