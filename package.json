@@ -1,12 +1,14 @@
 {
   "name": "mini-vue",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/mini-vue.cjs.js",
+  "module": "lib/mini-vue.esm.js",
   "repository": "https://github.com/hnustwjj/mini-vue.git",
   "author": "wjj <948065841@qq.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "build":"rollup -c rollup.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
