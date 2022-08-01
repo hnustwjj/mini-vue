@@ -62,8 +62,9 @@ function mountComponent(vnode, container) {
 }
 
 function setupRenderEffect(instance, container) {
+  const { proxy } = instance;
   // 获取到render之后，直接调用，获取该组件内部要渲染的内容，也就是children
-  const subTree = instance.render();
+  const subTree = instance.render.call(proxy);
   // patch里面判断
   patch(subTree, container);
 }

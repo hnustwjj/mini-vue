@@ -6,7 +6,7 @@ export const App = {
       {
         id: "root",
       },
-      [h("div", { class: "blue" }, "jzsp1"), h("div", { class: "red" }, "jzsp2")]
+      [h("div", { class: "blue" }, this.msg), h("div", { class: "red" }, "jzsp2")]
     );
   },
   setup() {
